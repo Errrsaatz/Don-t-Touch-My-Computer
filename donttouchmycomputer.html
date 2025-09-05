@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Don't Touch!</title>
+    <!-- Import de la police "Inter" depuis Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* --- Configuration Générale --- */
+        * {
+            box-sizing: border-box;
+        }
+
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #212121;
+            color: white;
+            font-family: 'Inter', sans-serif;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background-color 0.05s linear;
+        }
+
+        /* --- Conteneur Principal --- */
+        .main-container {
+            width: 1820px;
+            height: 960px;
+            max-width: 100vw;
+            max-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+        }
+
+        /* --- Écran Initial --- */
+        #initial-screen {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 80px;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        .main-title {
+            font-size: 100px;
+            text-align: center;
+            transform: translateY(-60px);
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.5);
+        }
+        
+        /* --- Checkbox Personnalisée --- */
+        .checkbox-wrapper {
+            position: absolute;
+            bottom: 150px;
+            text-align: center;
+        }
+
+        .custom-checkbox-container {
+            display: block;
+            position: relative;
+            cursor: pointer;
+            font-size: 20px;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
+            padding-left: 45px;
+            line-height: 30px;
+            transition: color 0.3s ease;
+        }
+
+        .custom-checkbox-container input {
+            display: none;
+        }
+
+        .checkmark {
+            position: absolute;
+            top: 0;
+            left: 0;
+            height: 30px;
+            width: 30px;
+            background-color: rgb(255, 255, 255);
+            border-radius: 6px;
+            transition: all 0.25s;
+            --spread: 10px; 
+        }
+
+        .custom-checkbox-container input:checked ~ .checkmark {
+            background-color: #000000;
+            box-shadow: 
+                -4px -4px var(--spread) 0px #03a9f4,
+                4px -4px var(--spread) 0px #f441a5,
+                4px 4px var(--spread) 0px #03a9f4,
+                -4px 4px var(--spread) 0px #f441a5;
+        }
+
+        .checkmark:after {
+            content: "";
+            position: absolute;
+            opacity: 0;
+            transform: rotate(0deg) scale(0);
+            left: 11px;
+            top: 7px;
+            width: 6px;
+            height: 12px;
+            border: solid white;
+            border-width: 0 4px 4px 0;
+            transition: all 0.25s;
+        }
+
+        .custom-checkbox-container input:checked ~ .checkmark:after {
+            opacity: 1;
+            transform: rotate(45deg) scale(1);
+        }
+
+        .text-error {
+            color: red !important;
+        }
+
+        /* --- Bouton Personnalisé --- */
+        .button-wrapper {
+            position: absolute;
+            bottom: 60px;
+        }
+        
+        .glowing-button-container {
+            position: relative;
+            padding: 3px;
+            background: linear-gradient(90deg, #03a9f4, #f441a5);
+            border-radius: 0.9em;
+            transition: all 0.4s ease;
+        }
+
+        .glowing-button-container button {
+            font-size: 1.4em;
+            padding: 0.6em 0.8em;
+            border-radius: 0.5em;
+            border: none;
+            background-color: #212121;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 2px 2px 3px #000000b4;
+        }
+
+        .glowing-button-container::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            margin: auto;
+            border-radius: 0.9em;
+            z-index: -10;
+            filter: blur(0);
+            transition: filter 0.4s ease;
+        }
+
+        .glowing-button-container:hover::before {
+            background: linear-gradient(90deg, #03a9f4, #f441a5);
+            filter: blur(1.2em);
+        }
+
+        .glowing-button-container:active::before {
+            filter: blur(0.2em);
+        }
+        
+        /* --- Messages d'Animation --- */
+        .animation-message {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 1.5s ease-in-out;
+        }
+
+        #second-message {
+            font-size: 30px;
+        }
+
+        #final-message {
+            font-size: 200px;
+            font-weight: 700;
+            transition: none;
+            text-align: center;
+            /* Empêche le texte d'aller à la ligne */
+            white-space: nowrap;
+            
+            /* --- LA MODIFICATION CLÉ --- */
+            /* Remplacement du text-stroke par un text-shadow multiple */
+            text-shadow: 
+                -2px -2px 0 #000,  
+                 2px -2px 0 #000,
+                -2px  2px 0 #000,
+                 2px  2px 0 #000,
+                -2px  0   0 #000,
+                 2px  0   0 #000,
+                 0   -2px 0 #000,
+                 0    2px 0 #000;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- ÉCRAN 1 : INITIAL -->
+        <div id="initial-screen">
+            <h1 class="main-title">DON'T TOUCH MY COMPUTER PLEASE</h1>
+
+            <div class="checkbox-wrapper">
+                <label class="custom-checkbox-container" id="checkbox-label">I will anyway use your computer and I don't care.
+                    <input type="checkbox" id="consent-checkbox">
+                    <span class="checkmark"></span>
+                </label>
+            </div>
+
+            <div class="button-wrapper">
+                <div class="glowing-button-container">
+                    <button id="enter-button">Enter</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ÉCRAN 2 : MESSAGES CACHÉS -->
+        <div id="second-message" class="animation-message">OKAY THEN ...</div>
+        <div id="final-message" class="animation-message">FUCK YOU !</div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const enterButton = document.getElementById('enter-button');
+            const checkbox = document.getElementById('consent-checkbox');
+            const checkboxLabel = document.getElementById('checkbox-label');
+            const initialScreen = document.getElementById('initial-screen');
+            const secondMessage = document.getElementById('second-message');
+            const finalMessage = document.getElementById('final-message');
+
+            let shakeInterval;
+            let strobeInterval;
+
+            enterButton.addEventListener('click', () => {
+                if (!checkbox.checked) {
+                    checkboxLabel.classList.add('text-error');
+                    checkboxLabel.style.animation = 'horizontal-shake 0.5s';
+                    setTimeout(() => checkboxLabel.style.animation = '', 500);
+                } 
+                else {
+                    initialScreen.style.opacity = '0';
+
+                    setTimeout(() => {
+                        initialScreen.style.display = 'none';
+                        secondMessage.style.opacity = '1';
+
+                        setTimeout(() => {
+                            secondMessage.style.opacity = '0';
+                            
+                            setTimeout(() => {
+                                secondMessage.style.display = 'none';
+                                
+                                setTimeout(() => {
+                                    finalMessage.style.opacity = '1';
+                                    startEpilepticEffects();
+                                }, 500);
+                                
+                            }, 1500);
+                            
+                        }, 1500 + 2000);
+                        
+                    }, 1500);
+                }
+            });
+
+            checkbox.addEventListener('change', () => {
+                if (checkbox.checked) {
+                    checkboxLabel.classList.remove('text-error');
+                }
+            });
+
+            function startEpilepticEffects() {
+                const colors = ['white', 'black', 'magenta', 'cyan', 'yellow', 'lime', 'red', 'orange', 'purple'];
+                
+                strobeInterval = setInterval(() => {
+                    const randomColor = colors[Math.floor(Math.random() * colors.length)];
+                    document.body.style.backgroundColor = randomColor;
+                }, 50);
+
+                shakeInterval = setInterval(() => {
+                    const randomX = Math.floor(Math.random() * 31) - 15;
+                    const randomY = Math.floor(Math.random() * 31) - 15;
+                    finalMessage.style.transform = `translate(calc(-50% + ${randomX}px), calc(-50% + ${randomY}px))`;
+                }, 50);
+            }
+        });
+
+        const styleSheet = document.createElement("style");
+        styleSheet.type = "text/css";
+        styleSheet.innerText = `
+            @keyframes horizontal-shake {
+                0%, 100% { transform: translateX(0); }
+                25% { transform: translateX(-5px); }
+                75% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(styleSheet);
+    </script>
+</body>
+</html>
